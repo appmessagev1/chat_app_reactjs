@@ -3,11 +3,11 @@ const getTokenFromLocalStorage = () => {
 }
 
 const getRefreshTokenFromLocalStorage = () => { 
-  return localStorage.getItem('refresh_token')
+  if (localStorage.getItem("refresh_token")) return localStorage.getItem("refresh_token");
 }
 
-const getUserFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem('user'))
+const getUserIdFromLocalStorage = () => {
+  if (localStorage.getItem("user_id")) return localStorage.getItem("user_id");
 }
 
-export { getTokenFromLocalStorage, getUserFromLocalStorage, getRefreshTokenFromLocalStorage };
+export { getTokenFromLocalStorage, getUserIdFromLocalStorage, getRefreshTokenFromLocalStorage };

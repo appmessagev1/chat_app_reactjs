@@ -27,7 +27,7 @@ const authApi = {
   },
 
   refreshToken() {
-    const url = `${process.env.REACT_APP_API_URL}/auth/refresh_token`;
+    const url = `${process.env.REACT_APP_API_URL || "http:/localhost:8080/v1"}/auth/refresh_token`;
     const payload = { refreshToken: getRefreshTokenFromLocalStorage() };
     return axios.post(url, payload);
   }

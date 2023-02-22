@@ -7,7 +7,7 @@ export const doSignIn = createAsyncThunk("auth/signIn", async payload => {
     const data = await authApi.signIn(payload);
     return data;
   } catch (error) {
-    throw(error)
+    throw error;
   }
 });
 
@@ -21,8 +21,10 @@ export const updateUser = createAsyncThunk("users/updateUser", async payload => 
 });
 
 export const doSignOut = createAsyncThunk("auth/signOut", async () => {
-  console.log("Signing out")
-})
+  localStorage.removeItem("user_id");
+  localStorage.removeItem("token");
+  localStorage.removeItem("refresh_token");
+});
 
 const userSlice = createSlice({
   name: "user",
@@ -43,12 +45,17 @@ const userSlice = createSlice({
       state.refresh_token = action.payload.data.refresh_token;
       localStorage.setItem("token", action.payload.data.access_token);
       localStorage.setItem("refresh_token", action.payload.data.refresh_token);
-      localStorage.setItem("user", JSON.stringify(action.payload.data.user));
+      localStorage.setItem("user_id", action.payload.data.user._id);
     });
     builder.addCase(updateUser.fulfilled, (state, action) => {
-      state.data = action.payload.data
-      localStorage.setItem("user", JSON.stringify(action.payload.data.user));
-    })
+      state.data = action.payload.data;
+      localStorage.setItem("user_id", action.payload.data.user._id);
+    });
+    builder.addCase(doSignOut.fulfilled, (state, action) => {
+      state.data = [];
+      state.access_token = "";
+      state.refresh_token = "";
+    });
   },
 });
 

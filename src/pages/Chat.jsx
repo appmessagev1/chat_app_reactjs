@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 import { toast } from "react-toastify";
+import { debounce } from "lodash";
 
 import TextInput from "components/common/TextInput";
 import UserCard from "components/common/UserCard";
@@ -15,7 +16,7 @@ import { getUserByIds } from "redux/slices/usersSlice";
 import { getConversations, setCurrentConversation } from "redux/slices/conversationSlice";
 import { setCurrentReceiver } from "redux/slices/currentReceiverSlice";
 import { setSocketOnlineUsers } from "redux/slices/socketOnlineUsers";
-import { getUserFromLocalStorage } from "utils/auth";
+import { getUserIdFromLocalStorage } from "utils/auth";
 import conversationApi from "api/conversationApi";
 
 const Chat = ({ socket }) => {
@@ -28,6 +29,7 @@ const Chat = ({ socket }) => {
   const socketOnlineUsers = useSelector(state => state.socketOnlineUsers.data);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [searchUsers, setSearchUsers] = useState(undefined);
 
   useEffect(() => {
     socket.on("online_users", data => {
@@ -47,7 +49,7 @@ const Chat = ({ socket }) => {
   }, [socketOnlineUsers]);
 
   useEffect(() => {
-    const id = user?._id || getUserFromLocalStorage()?._id;
+    const id = user?._id || getUserIdFromLocalStorage();
     const action = getConversations({ id });
     dispatch(action);
     setIsLoading(false);
@@ -55,7 +57,7 @@ const Chat = ({ socket }) => {
 
   useEffect(() => {
     const ids = conversations
-      .map(conversation => {
+      ?.map(conversation => {
         if (conversation.userId === user._id) return conversation.senderId;
         return conversation.userId;
       })
@@ -104,9 +106,6 @@ const Chat = ({ socket }) => {
       dispatch(action);
     } else {
       try {
-        console.log(receiver)
-        console.log("Create conversation");
-
         const payload = {
           userId: receiver._id,
           senderId: user._id,
@@ -131,6 +130,15 @@ const Chat = ({ socket }) => {
     return users.find(user => user._id === conversation.userId);
   };
 
+  const onSearchChange = (value) => {
+    // setSearch(value)
+    // debounce(onSearchChange(value), 500)
+  }
+
+  const onsearchUsers = async (data) => {
+    console.log("Searching users...", data)
+  }
+
   return (
     <div className="-mt-16 ml-auto xl:-ml-16 mr-auto xl:pl-16 pt-16 xl:h-screen w-auto sm:w-3/5 xl:w-auto grid grid-cols-12 gap-6">
       {isLoading ? (
@@ -140,7 +148,7 @@ const Chat = ({ socket }) => {
           <div className="col-span-12 xl:col-span-3 -mt-16 xl:mt-0 pt-20 xl:-mr-6 px-6 xl:pt-6 flex-col overflow-hidden">
             <div className="text-xl font-medium">Chats</div>
             <div className="mt-5 box">
-              <TextInput placeholder="Search for users..." appendIcon="search" />
+                <TextInput placeholder="Search for users..." appendIcon="search" inputChange={onSearchChange} />
             </div>
             <div className="flex-none overflow-x-auto overflow-y-hidden scroll scrollbar-hidden">
               <div className="flex mt-6">
@@ -154,7 +162,7 @@ const Chat = ({ socket }) => {
             </div>
             <div className="text-base font-medium leading-tight mt-3">Recent Chats</div>
             <div className="overflow-y-auto scrollbar-hidden -mx-5 px-5 user-card-container">
-              {conversations.length &&
+              {conversations?.length &&
                 conversations.map((conversation, index) => {
                   return (
                     <UserCard
