@@ -26,7 +26,7 @@ const InfoContent = () => {
           <div className="border-gray-200 flex justify-between items-center border-b pb-3">
             <div>
               <div className="text-gray-500">Country</div>
-              <div className="mt-0.5">{currentReceiver?.address || "Hai duong, Viet Nam"}</div>
+              <div className="mt-0.5">{currentReceiver?.country || "Hai duong, Viet Nam"}</div>
             </div>
             <div>
               <RiGlobalLine size={20} color="#96A0B1" />

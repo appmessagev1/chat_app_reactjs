@@ -17,7 +17,7 @@ const Profile = () => {
   const {
     register,
     handleSubmit,
-    watch,
+    reset, 
     formState: { errors },
   } = useForm();
 
@@ -25,35 +25,15 @@ const Profile = () => {
     nameRule: {
       required: false,
       maxLength: 50,
-      validate: val => {
-        if (!/^[A-Za-z0-9]+$/i.test(val)) {
-          return "Name is not a valid";
-        }
-      },
     },
     phoneNumberRule: {
       required: false,
-      validate: val => {
-        if (!/^[0-9]+$/i.test(val)) {
-          return "Phone number is not a valid";
-        }
-      },
     },
     titleRule: {
       required: false,
-      validate: val => {
-        if (!/^[A-Za-z0-9]+$/i.test(val)) {
-          return "Title is not a valid";
-        }
-      },
     },
     countryRule: {
       required: false,
-      validate: val => {
-        if (!/^[A-Za-z]+$/i.test(val)) {
-          return "Title is not a valid";
-        }
-      },
     },
   };
 
@@ -77,7 +57,10 @@ const Profile = () => {
     const formData = { ...data, avatar: image || '', id: currentUser._id }
     const action = updateUser(formData)
     dispatch(action).then((response) => {
-      console.log(response)
+      if (response.payload.error_code === 0) {
+        toast.success('Update profile successfully')
+        reset()
+      }
     })
   };
 

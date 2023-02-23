@@ -13,6 +13,7 @@ export const doSignIn = createAsyncThunk("auth/signIn", async payload => {
 
 export const updateUser = createAsyncThunk("users/updateUser", async payload => {
   try {
+    Object.keys(payload).forEach(k => !payload[k] && delete payload[k]);
     const data = await userApi.updateProfile(payload);
     return data;
   } catch (error) {
@@ -49,7 +50,7 @@ const userSlice = createSlice({
     });
     builder.addCase(updateUser.fulfilled, (state, action) => {
       state.data = action.payload.data;
-      localStorage.setItem("user_id", action.payload.data.user._id);
+      localStorage.setItem("user_id", action.payload.data._id);
     });
     builder.addCase(doSignOut.fulfilled, (state, action) => {
       state.data = [];

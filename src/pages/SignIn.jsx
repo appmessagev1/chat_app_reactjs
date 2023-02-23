@@ -21,7 +21,6 @@ const SignIn = ({ socket }) => {
     const action = doSignIn(form);
     dispatch(action)
       .then(({ payload }) => {
-        console.log(payload);
         if (payload.error_code === 0) navigate("/");
         else toast.error("Invalid email or password");
       })

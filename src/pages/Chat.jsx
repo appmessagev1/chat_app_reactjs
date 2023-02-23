@@ -18,6 +18,7 @@ import { setCurrentReceiver } from "redux/slices/currentReceiverSlice";
 import { setSocketOnlineUsers } from "redux/slices/socketOnlineUsers";
 import { getUserIdFromLocalStorage } from "utils/auth";
 import conversationApi from "api/conversationApi";
+import { useHorizontalScroll } from "utils/customHook/useHorizontalScroll";
 
 const Chat = ({ socket }) => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const Chat = ({ socket }) => {
   const currentConversation = useSelector(state => state.conversations.currentConversation);
   const currentReceiver = useSelector(state => state.currentReceiver.data);
   const socketOnlineUsers = useSelector(state => state.socketOnlineUsers.data);
+  const scrollRef = useHorizontalScroll();
 
   const [isLoading, setIsLoading] = useState(true);
   const [searchUsers, setSearchUsers] = useState(undefined);
@@ -64,10 +66,10 @@ const Chat = ({ socket }) => {
       .filter(id => id !== user._id);
     const action = getUserByIds({ ids });
     dispatch(action);
-    if (currentConversation.hasOwnProperty('userData')) {
-      const _currentConversation = conversations.find(conversation => conversation._id === currentConversation._id)
-      const action = setCurrentConversation(_currentConversation)
-      dispatch(action)
+    if (currentConversation.hasOwnProperty("userData")) {
+      const _currentConversation = conversations.find(conversation => conversation._id === currentConversation._id);
+      const action = setCurrentConversation(_currentConversation);
+      dispatch(action);
     }
   }, [conversations]);
 
@@ -109,16 +111,18 @@ const Chat = ({ socket }) => {
         const payload = {
           userId: receiver._id,
           senderId: user._id,
-          lastMessage: ""
-        } 
+          lastMessage: "",
+        };
 
-        const response = await conversationApi.postConversation(payload)
+        const response = await conversationApi.postConversation(payload);
         if (response.error_code === 0) {
-          const action = getConversations({ id: user._id })
-          dispatch(action)
+          const action = getConversations({ id: user._id });
+          dispatch(action);
+          const currentConversationAction = setCurrentConversation(response.data.conversation);
+          dispatch(currentConversationAction);
         }
       } catch (error) {
-        toast.error('Cannot chat with this user!')
+        toast.error("Cannot chat with this user!");
       }
     }
   };
@@ -130,14 +134,14 @@ const Chat = ({ socket }) => {
     return users.find(user => user._id === conversation.userId);
   };
 
-  const onSearchChange = (value) => {
+  const onSearchChange = value => {
     // setSearch(value)
     // debounce(onSearchChange(value), 500)
-  }
+  };
 
-  const onsearchUsers = async (data) => {
-    console.log("Searching users...", data)
-  }
+  const onsearchUsers = async data => {
+    console.log("Searching users...", data);
+  };
 
   return (
     <div className="-mt-16 ml-auto xl:-ml-16 mr-auto xl:pl-16 pt-16 xl:h-screen w-auto sm:w-3/5 xl:w-auto grid grid-cols-12 gap-6">
@@ -148,14 +152,19 @@ const Chat = ({ socket }) => {
           <div className="col-span-12 xl:col-span-3 -mt-16 xl:mt-0 pt-20 xl:-mr-6 px-6 xl:pt-6 flex-col overflow-hidden">
             <div className="text-xl font-medium">Chats</div>
             <div className="mt-5 box">
-                <TextInput placeholder="Search for users..." appendIcon="search" inputChange={onSearchChange} />
+              <TextInput placeholder="Search for users..." appendIcon="search" inputChange={onSearchChange} />
             </div>
-            <div className="flex-none overflow-x-auto overflow-y-hidden scroll scrollbar-hidden">
+            <div className="flex-none overflow-x-auto overflow-y-hidden scroll scrollbar-hidden" ref={scrollRef}>
               <div className="flex mt-6">
                 {socketOnlineUsers?.length > 0 &&
                   socketOnlineUsers.map((onlineUser, index) => {
                     if (onlineUser?._id !== user?._id)
-                      return <Avatar click={handleClickAvatar} key={index} user={onlineUser} status="online" className="mr-3 cursor-pointer" />;
+                      return (
+                        <div className="flex flex-col items-center mr-3">
+                          <Avatar click={handleClickAvatar} key={index} user={onlineUser} status="online" className="cursor-pointer" />
+                          <span className="text-gray-500 mt-1">{onlineUser.name}</span>
+                        </div>
+                      );
                     return <></>;
                   })}
               </div>

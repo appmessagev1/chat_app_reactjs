@@ -31,7 +31,7 @@ const TopBar = () => {
             <Avatar user={currentUser} size="mini" />
             <div className="ml-2">
               <div className="font-medium mb-1/3 leading-tight truncate w-28">{currentUser?.name || currentUser?.email}</div>
-              <div className="text-gray-600 text-xs">Hello</div>
+              <div className="text-gray-600 text-xs">{currentUser?.title}</div>
             </div>
           </div>
         </div>
