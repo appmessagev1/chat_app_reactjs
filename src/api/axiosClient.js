@@ -5,7 +5,7 @@ import { getTokenFromLocalStorage } from "utils/auth";
 import authApi from "api/authApi";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:8080/v1",
+  baseURL: process.env.REACT_APP_API_URL,
   headers: {
     "content-type": "application/json",
   },

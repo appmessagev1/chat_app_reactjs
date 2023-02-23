@@ -14,7 +14,7 @@ import Profile from "pages/Profile";
 import Tasks from "pages/Tasks";
 import NotFound from "pages/NotFound";
 
-const socket = socketIO.connect("http://localhost:8080");
+const socket = socketIO.connect(process.env.REACT_APP_API_URL);
 
 function App() {
   return (
