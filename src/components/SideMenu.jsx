@@ -14,27 +14,27 @@ const SideMenu = () => {
 
   const menu = [
     {
-      icon: <CiChat1 size={24} color={location.pathname === "/" && "#007aff"} />,
+      icon: <CiChat1 size={24} color={location.pathname === "/" ? "#007aff" : ""} />,
       text: "Chats",
       link: "/",
     },
     {
-      icon: <CiBoxes size={24} color={location.pathname === "/groups" && "#007aff"} />,
+      icon: <CiBoxes size={24} color={location.pathname === "/groups" ? "#007aff" : ''} />,
       text: "Groups",
       link: "/groups",
     },
     {
-      icon: <BsListTask size={24} color={location.pathname === "/tasks" && "#007aff"} />,
+      icon: <BsListTask size={24} color={location.pathname === "/tasks" ? "#007aff" : ''} />,
       text: "Tasks",
       link: "/tasks",
     },
     {
-      icon: <CiUser size={24} color={location.pathname === "/profile" && "#007aff"} />,
+      icon: <CiUser size={24} color={location.pathname === "/profile" ? "#007aff": ''} />,
       text: "Profile",
       link: "/profile",
     },
     {
-      icon: <CiSettings size={24} color={location.pathname === "/settings" && "#007aff"} />,
+      icon: <CiSettings size={24} color={location.pathname === "/settings" ? "#007aff": ''} />,
       text: "Settings",
       link: "/settings",
     },

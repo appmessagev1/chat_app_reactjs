@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import notification from "assert/sounds/notification.wav";
 
 import TopBar from "components/TopBar";
-import { setMessages } from "redux/slices/messageSlice";
+import { addMessage } from "redux/slices/messageSlice";
 import { getConversations, setCurrentConversation } from "redux/slices/conversationSlice";
 import { getUserIdFromLocalStorage } from "utils/auth";
 
@@ -22,7 +22,7 @@ const DefaultLayout = ({ children, socket }) => {
       dispatch(action);
 
       if (data.conversationId === currentConversation._id) {
-        const action = setMessages(data);
+        const action = addMessage(data);
         dispatch(action);
       }
       if (notificationSound.current) {

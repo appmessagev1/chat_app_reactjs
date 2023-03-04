@@ -94,6 +94,30 @@
   }
 }
 
+.react-modal {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 500px;
+  padding: 16px 24px;
+  transform: translateY(-50%);
+  box-shadow: 0 3px 20px rgb(0 0 0 / 4%);
+  @apply bg-white border-transparent rounded-md;
+}
+
+.react-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.45);
+  z-index: 1000;
+}
+
 @media (max-width: 767px) {
   .auth {
     max-width: 100%;

@@ -18,7 +18,7 @@ const socket = socketIO.connect(process.env.REACT_APP_API_URL_SOCKET);
 
 function App() {
   return (
-    <div className="App scrollbar-hidden">
+    <div className="App scrollbar-hidden" id="App">
       <Router>
         <Routes>
           <Route element={<ProtectedRouter socket={socket} />}>

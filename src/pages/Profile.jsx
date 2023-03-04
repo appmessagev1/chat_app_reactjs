@@ -53,7 +53,7 @@ const Profile = () => {
     }
   };
 
-  const onSubmit = async data => {
+  const onSubmit = data => {
     const formData = { ...data, avatar: image || '', id: currentUser._id }
     const action = updateUser(formData)
     dispatch(action).then((response) => {

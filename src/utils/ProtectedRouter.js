@@ -12,12 +12,16 @@ const ProtectedRouter = ({ socket }) => {
   const userId = getUserIdFromLocalStorage();
 
   const getUser = async (id) => {
-    const response = await userApi.getUserById({ id })
-    if (response.error_code === 0) {
-      const _user = response.data[0]
-      const action = setUser(_user)
-      dispatch(action)
-      socket.emit("sign_in", _user);
+    try {
+      const response = await userApi.getUserById({ id })
+      if (response.error_code === 0) {
+        const _user = response.data[0]
+        const action = setUser(_user)
+        dispatch(action)
+        socket.emit("sign_in", _user);
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 

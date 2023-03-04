@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isEmpty } from "lodash";
 import { toast } from "react-toastify";
-import { debounce } from "lodash";
 
 import TextInput from "components/common/TextInput";
 import UserCard from "components/common/UserCard";
@@ -160,12 +159,12 @@ const Chat = ({ socket }) => {
                   socketOnlineUsers.map((onlineUser, index) => {
                     if (onlineUser?._id !== user?._id)
                       return (
-                        <div className="flex flex-col items-center mr-3">
+                        <div className="flex flex-col items-center mr-3" key={onlineUser._id}>
                           <Avatar click={handleClickAvatar} key={index} user={onlineUser} status="online" className="cursor-pointer" />
                           <span className="text-gray-500 mt-1">{onlineUser.name}</span>
                         </div>
                       );
-                    return <></>;
+                    return <div key={index}></div>;
                   })}
               </div>
             </div>
