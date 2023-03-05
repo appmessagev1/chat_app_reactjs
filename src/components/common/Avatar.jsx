@@ -18,7 +18,7 @@ const Avatar = ({ img, alt, size, statusPosition, className, user, click }) => {
         )}
       </div>
       <Tooltip anchorSelect=".avatar" place="top" className="!rounded-md !bg-gray-400">
-        {user.name || user.email}
+        {user?.name || user?.email}
       </Tooltip>
     </>
   );
