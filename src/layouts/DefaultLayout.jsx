@@ -29,7 +29,7 @@ const DefaultLayout = ({ children, socket }) => {
         notificationSound.current.play();
       }
     });
-  }, [currentConversation]);
+  }, [currentConversation._id]);
 
   useEffect(() => {
     notificationSound.current = new Audio(notification);

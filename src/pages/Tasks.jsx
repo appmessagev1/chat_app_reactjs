@@ -2,79 +2,79 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { toast } from "react-toastify";
-import { BsPlusCircle } from 'react-icons/bs'
+import { BsPlusCircle } from "react-icons/bs";
 import { useForm } from "react-hook-form";
 
 import TaskCard from "components/TaskCard";
 import { getTasks, addTask } from "redux/slices/taskSlice";
 import { getUserIdFromLocalStorage } from "utils/auth";
-import taskApi from "api/taskApi"
+import taskApi from "api/taskApi";
 import { mapStatusToId } from "utils/global";
 import Modal from "components/common/Modal";
 
 const getTasksByStatus = tasks => {
-  const taskStatus = tasks.reduce((acc, task, index) => { 
-    if (task.status === 0) {
-      const toDo = {
+  const taskStatus = tasks.reduce(
+    (acc, task, index) => {
+      if (task.status === 0) {
+        const toDo = {
+          name: "Todo",
+          tasks: [...acc.toDo.tasks, task],
+        };
+        acc = { ...acc, toDo };
+      } else if (task.status === 1) {
+        const inProcess = {
+          name: "In process",
+          tasks: [...acc.inProcess.tasks, task],
+        };
+        acc = { ...acc, inProcess };
+      } else if (task.status === 2) {
+        const inReview = {
+          name: "In review",
+          tasks: [...acc.inReview.tasks, task],
+        };
+        acc = { ...acc, inReview };
+      } else if (task.status === 3) {
+        const done = {
+          name: "Done",
+          tasks: [...acc.done.tasks, task],
+        };
+        acc = { ...acc, done };
+      }
+      return acc;
+    },
+    {
+      toDo: {
         name: "Todo",
-        tasks: [...acc.toDo.tasks, task],
-      };
-      acc = {...acc, toDo}
-    }
-    else if (task.status === 1) {
-      const inProcess = {
+        tasks: [],
+      },
+      inProcess: {
         name: "In process",
-        tasks: [...acc.inProcess.tasks, task],
-      };
-      acc = { ...acc, inProcess };
-    }
-    else if (task.status === 2) {
-      const inReview = {
+        tasks: [],
+      },
+      inReview: {
         name: "In review",
-        tasks: [...acc.inReview.tasks, task],
-      };
-      acc = { ...acc, inReview };
-    }
-    else if (task.status === 3) {
-      const done = {
+        tasks: [],
+      },
+      done: {
         name: "Done",
-        tasks: [...acc.done.tasks, task],
-      };
-      acc = { ...acc, done };
+        tasks: [],
+      },
     }
-    return acc
-  }, {
-    toDo: {
-      name: "Todo",
-      tasks: [],
-    },
-    inProcess: {
-      name: "In process",
-      tasks: [],
-    },
-    inReview: {
-      name: "In review",
-      tasks: [],
-    },
-    done: {
-      name: "Done",
-      tasks: [],
-    },
-  });
+  );
   return taskStatus;
 };
 
 const updateStatusTask = async (taskId, status) => {
   try {
-    const _status = mapStatusToId(status)
+    const _status = mapStatusToId(status);
     const response = await taskApi.updateStatus({ id: taskId, status: _status });
     if (response.error_code === 0) {
-      toast.success('Update status successfully')
+      toast.success("Update status successfully");
     }
   } catch (error) {
-    toast.error('Update status fail')
+    toast.error("Update status fail");
   }
-}
+};
 
 const onDragEnd = (result, columns, setColumns) => {
   if (!result.destination) return;
@@ -118,14 +118,11 @@ const Task = () => {
   const user = useSelector(state => state.user.data);
   const tasks = useSelector(state => state.tasks.data);
   const [columns, setColumns] = useState({});
-  const [isOpenModal, setIsOpenModal] = useState(false)
-  const [currentStatus, setCurrentStatus] = useState(undefined)
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState(undefined);
+  const isLoading = useSelector(state => state.tasks.isLoading);
 
-  const {
-    register,
-    handleSubmit,
-    reset
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
     getTasksByUserId();
@@ -141,96 +138,104 @@ const Task = () => {
     setColumns(getTasksByStatus(tasks));
   }, [tasks]);
 
-  useEffect(() => { 
+  useEffect(() => {
     // Send to backend to hold position information
-    console.log(columns)
-  }, [columns])
+    console.log(columns);
+  }, [columns]);
 
-  const handleOpenModal = (status) => {
+  const handleOpenModal = status => {
     setCurrentStatus(status);
-    setIsOpenModal(true)
-  }
+    setIsOpenModal(true);
+  };
 
-  const handleCloseModal = () => { 
-    reset()
-    setIsOpenModal(false)
-  }
+  const handleCloseModal = () => {
+    reset();
+    setIsOpenModal(false);
+  };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async data => {
     try {
       const payload = {
         userId: user._id || getUserIdFromLocalStorage(),
         ...data,
         status: currentStatus || 0,
-      }
-  
-      const response = await taskApi.postTask(payload)
+      };
+
+      const response = await taskApi.postTask(payload);
       if (response.error_code === 0) {
-        toast.success('Create task successfully')
-        handleCloseModal()
-        const _tasks = response.data.task
+        toast.success("Create task successfully");
+        handleCloseModal();
+        const _tasks = response.data.task;
         const action = addTask(_tasks);
-        dispatch(action)
+        dispatch(action);
       }
-    } catch (err) { 
-      toast.error('Create task failed')
+    } catch (err) {
+      toast.error("Create task failed");
     }
-  }
+  };
 
   return (
     <div className="-mt-16 ml-auto xl:-ml-16 mr-auto xl:pl-16 pt-16 xl:h-screen w-auto sm:w-3/5 xl:w-auto">
-      <div className="h-full w-full grid grid-cols-12 gap-6 p-8">
-        <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
-          {Object.entries(columns).map(([columnId, column], index) => {
-            return (
-              <div className="col-span-3" key={columnId}>
-                <div className="m-2 pl-2 flex items-center">
-                  <p className="text-base font-bold leading-tight">
-                    {column.name} <span className="text-gray-500 text-sm font-medium ml-2">{column.tasks.length || 0}</span>
-                  </p>
-                  <BsPlusCircle size={16} onClick={() => handleOpenModal(index)} className="ml-2 cursor-pointer"/>
-                </div>
-                <div className="m-2">
-                  <Droppable droppableId={columnId} key={columnId}>
-                    {(provided, snapshot) => {
-                      return (
-                        <div
-                          className="p-2 rounded-md"
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          style={{
-                            border: snapshot.isDraggingOver ? "1px solid #ccc" : "",
-                            minHeight: "calc(100vh - 160px)",
-                          }}>
-                          {column.tasks.map((item, index) => {
-                            return <TaskCard task={item} index={index} key={item._id} />;
-                          })}
-                          {provided.placeholder}
-                        </div>
-                      );
-                    }}
-                  </Droppable>
-                </div>
-              </div>
-            );
-          })}
-        </DragDropContext>
-      </div>
-      <Modal isOpen={isOpenModal} handleOnClose={handleCloseModal} titleModal="Add Task">
-        <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <input type="text" className="text-input-form py-2 px-4 auth__input mb-4" placeholder="Title" {...register("title")} />
-            <input type="text" className="text-input-form py-2 px-4 auth__input mb-4" placeholder="Content" {...register("content")} />
+      {isLoading ? (
+        <div></div>
+      ) : (
+        <>
+          <div className="h-full w-full grid grid-cols-12 gap-6 p-8">
+            <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
+              {Object.entries(columns).map(([columnId, column], index) => {
+                return (
+                  <div className="col-span-3" key={columnId}>
+                    <div className="m-2 pl-2 flex items-center">
+                      <p className="text-base font-bold leading-tight">
+                        {column.name} <span className="text-gray-500 text-sm font-medium ml-2">{column.tasks.length || 0}</span>
+                      </p>
+                      <BsPlusCircle size={16} onClick={() => handleOpenModal(index)} className="ml-2 cursor-pointer" />
+                    </div>
+                    <div className="m-2">
+                      <Droppable droppableId={columnId} key={columnId}>
+                        {(provided, snapshot) => {
+                          return (
+                            <div
+                              className="p-2 rounded-md"
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                              style={{
+                                border: snapshot.isDraggingOver ? "1px solid #ccc" : "",
+                                minHeight: "calc(100vh - 160px)",
+                              }}>
+                              {column.tasks.map((item, index) => {
+                                return <TaskCard task={item} index={index} key={item._id} />;
+                              })}
+                              {provided.placeholder}
+                            </div>
+                          );
+                        }}
+                      </Droppable>
+                    </div>
+                  </div>
+                );
+              })}
+            </DragDropContext>
+          </div>
+          <Modal isOpen={isOpenModal} handleOnClose={handleCloseModal} titleModal="Add Task">
+            <div>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <input type="text" className="text-input-form py-2 px-4 auth__input mb-4" placeholder="Title" {...register("title")} />
+                <input type="text" className="text-input-form py-2 px-4 auth__input mb-4" placeholder="Content" {...register("content")} />
 
-            <div className="flex justify-end items-center w-80 ml-auto">
-              <button className="btn btn-secondary" onClick={handleCloseModal}>
-                Cancel
-              </button>
-              <button type="submit" className="btn btn-primary ml-2">Add</button>
+                <div className="flex justify-end items-center w-80 ml-auto">
+                  <button className="btn btn-secondary" onClick={handleCloseModal}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary ml-2">
+                    Add
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
-      </Modal>
+          </Modal>
+        </>
+      )}
     </div>
   );
 };

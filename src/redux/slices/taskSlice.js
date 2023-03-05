@@ -14,6 +14,7 @@ const taskSlice = createSlice({
   name: "tasks",
   initialState: {
     data: [],
+    isLoading: false
   },
   reducers: {
     addTask(state, action) {
@@ -21,9 +22,16 @@ const taskSlice = createSlice({
     },
   },
   extraReducers: builder => {
+    builder.addCase(getTasks.pending, state => {
+      state.isLoading = true;
+    });
     builder.addCase(getTasks.fulfilled, (state, action) => {
       state.data = action.payload.data;
+      state.isLoading = false
     });
+    builder.addCase(getTasks.rejected, (state, action) => {
+      state.isLoading = false
+    })
   },
 });
 

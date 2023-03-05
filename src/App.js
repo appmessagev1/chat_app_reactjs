@@ -13,6 +13,7 @@ import Chat from "pages/Chat";
 import Profile from "pages/Profile";
 import Tasks from "pages/Tasks";
 import NotFound from "pages/NotFound";
+import Group from "pages/Group";
 
 const socket = socketIO.connect(process.env.REACT_APP_API_URL_SOCKET);
 
@@ -24,6 +25,7 @@ function App() {
           <Route element={<ProtectedRouter socket={socket} />}>
             <Route element={<DefaultLayout socket={socket} />}>
               <Route element={<Chat socket={socket} />} path="/" />
+              <Route element={<Group socket={socket} />} path="/groups" />
               <Route element={<Profile socket={socket} />} path="/profile" />
               <Route element={<Tasks socket={socket} />} path="/tasks" />
             </Route>

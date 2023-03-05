@@ -7,20 +7,40 @@ const messageApi = {
     //    limit
     // }
 
-    const {conversationId, limit} = payload;
-    const url = `/messages/${conversationId || ''}/get_message_in_conversation?limit=${limit || ''}`;
-    return axiosClient.get(url, { ...payload  });
+    const { conversationId, limit, offset } = payload;
+    const url = `/messages/${conversationId || ""}/get_message_in_conversation?limit=${limit || ""}&offset=${offset || ""}`;
+    return axiosClient.get(url);
   },
-  postMessage(payload) { 
+  postMessageInConversation(payload) {
     // payload = {
     //    content
     //    conversationId
     //    senderId
     // }
 
-    const url = "/messages"
+    const url = "/messages";
     return axiosClient.post(url, { ...payload });
-  }
+  },
+  getMessageInGroup(payload) {
+    // payload = {
+    //    conversationId,
+    //    limit
+    // }
+  
+    const { groupId, limit, offset } = payload;
+    const url = `/messages/${groupId || ""}/get_message_in_group?limit=${limit || ""}&offset=${offset || ""}`;
+    return axiosClient.get(url);
+  },
+  postMessageInGroup(payload) {
+    // payload = {
+    //    content
+    //    conversationId
+    //    senderId
+    // }
+
+    const url = "/messages/group";
+    return axiosClient.post(url, { ...payload });
+  },
 };
 
 export default messageApi;

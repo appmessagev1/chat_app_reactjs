@@ -14,7 +14,8 @@ const conversationSlice = createSlice({
   name: "conversations",
   initialState: {
     data: [],
-    currentConversation: {}
+    currentConversation: {},
+    isLoading: false
   },
   reducers: {
     setConversations(state, action) {
@@ -25,8 +26,15 @@ const conversationSlice = createSlice({
     }
   },
   extraReducers: builder => {
+    builder.addCase(getConversations.pending, (state, action) => {
+      state.isLoading = true
+    });
     builder.addCase(getConversations.fulfilled, (state, action) => {
       state.data = action.payload.data;
+      state.isLoading = false
+    });
+    builder.addCase(getConversations.rejected, (state, action) => {
+      state.isLoading = false
     });
   },
 });

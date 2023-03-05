@@ -37,7 +37,7 @@ const TextSendMsg = ({ socket }) => {
         senderId: sender._id,
         conversationId: currentConversation._id,
       };
-      const response = await messageApi.postMessage(dataPost)
+      const response = await messageApi.postMessageInConversation(dataPost);
     } catch (error) {
       toast.error('Send message failed')
     }

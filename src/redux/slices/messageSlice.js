@@ -10,6 +10,15 @@ export const getMessagesPrivate = createAsyncThunk("message/getMessages", async 
   }
 });
 
+export const getMessagesGroup = createAsyncThunk("message/getMessagesGroup", async payload => {
+  try {
+    const data = await messageApi.getMessageInGroup(payload);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+});
+
 const messageSlice = createSlice({
   name: "messages",
   initialState: {
@@ -22,6 +31,9 @@ const messageSlice = createSlice({
   },
   extraReducers: builder => {
     builder.addCase(getMessagesPrivate.fulfilled, (state, action) => {
+      state.data = action.payload.data.reverse();
+    });
+    builder.addCase(getMessagesGroup.fulfilled, (state, action) => {
       state.data = action.payload.data.reverse();
     });
   },

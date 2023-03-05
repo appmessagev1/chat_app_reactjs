@@ -29,7 +29,7 @@ const Chat = ({ socket }) => {
   const socketOnlineUsers = useSelector(state => state.socketOnlineUsers.data);
   const scrollRef = useHorizontalScroll();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = useSelector(state => state.conversations.isLoading);
   const [searchUsers, setSearchUsers] = useState(undefined);
 
   useEffect(() => {
@@ -53,7 +53,6 @@ const Chat = ({ socket }) => {
     const id = user?._id || getUserIdFromLocalStorage();
     const action = getConversations({ id });
     dispatch(action);
-    setIsLoading(false);
   }, [user]);
 
   useEffect(() => {
@@ -90,6 +89,7 @@ const Chat = ({ socket }) => {
     const data = {
       conversationId: conversation._id,
       limit: 10,
+      offset: 0,
     };
     const getMessageAction = getMessagesPrivate(data);
     dispatch(getMessageAction);
@@ -117,8 +117,6 @@ const Chat = ({ socket }) => {
         if (response.error_code === 0) {
           const action = getConversations({ id: user._id });
           dispatch(action);
-          const currentConversationAction = setCurrentConversation(response.data.conversation);
-          dispatch(currentConversationAction);
         }
       } catch (error) {
         toast.error("Cannot chat with this user!");
