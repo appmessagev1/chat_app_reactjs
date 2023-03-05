@@ -15,11 +15,13 @@ const ProtectedRouter = ({ socket }) => {
   const getUser = async (id) => {
     try {
       const response = await userApi.getUserById({ id })
-      if (response.error_code === 0) {
+      if (response.error_code === 0 && response.data[0]) {
         const _user = response.data[0]
         const action = setUser(_user)
         dispatch(action)
         socket.emit("sign_in", _user);
+      } else {
+        navigate("/sign_in")
       }
     } catch (error) {
       navigate("/sign_in")
