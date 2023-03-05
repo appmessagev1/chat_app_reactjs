@@ -15,7 +15,7 @@ const ProtectedRouter = ({ socket }) => {
   const getUser = async (id) => {
     try {
       const response = await userApi.getUserById({ id })
-      if (response.error_code === 0 && response.data[0]) {
+      if (response.error_code === 0 && response.data.length) {
         const _user = response.data[0]
         const action = setUser(_user)
         dispatch(action)
