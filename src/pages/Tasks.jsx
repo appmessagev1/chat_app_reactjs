@@ -9,8 +9,9 @@ import TaskCard from "components/TaskCard";
 import { getTasks, addTask } from "redux/slices/taskSlice";
 import { getUserIdFromLocalStorage } from "utils/auth";
 import taskApi from "api/taskApi";
-import { mapStatusToId } from "utils/global";
+import { mapStatusToId, mapIdToColor } from "utils/global";
 import Modal from "components/common/Modal";
+import Loading from "./Loading";
 
 const getTasksByStatus = tasks => {
   const taskStatus = tasks.reduce(
@@ -177,45 +178,48 @@ const Task = () => {
   return (
     <div className="-mt-16 ml-auto xl:-ml-16 mr-auto xl:pl-16 pt-16 xl:h-screen w-auto sm:w-3/5 xl:w-auto">
       {isLoading ? (
-        <div></div>
+        <Loading />
       ) : (
         <>
-          <div className="h-full w-full grid grid-cols-12 gap-6 p-8">
-            <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
-              {Object.entries(columns).map(([columnId, column], index) => {
-                return (
-                  <div className="col-span-3" key={columnId}>
-                    <div className="m-2 pl-2 flex items-center">
-                      <p className="text-base font-bold leading-tight">
-                        {column.name} <span className="text-gray-500 text-sm font-medium ml-2">{column.tasks.length || 0}</span>
-                      </p>
-                      <BsPlusCircle size={16} onClick={() => handleOpenModal(index)} className="ml-2 cursor-pointer" />
+          <div className="h-full w-full ">
+            <div className="text-xl font-medium pt-6 px-6">Task Manager</div>
+            <div className="grid grid-cols-12 gap-6 pb-8 px-2 pt-4">
+              <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
+                {Object.entries(columns).map(([columnId, column], index) => {
+                  return (
+                    <div className="col-span-3" key={columnId}>
+                      <div className="m-2 pl-2 flex items-center">
+                        <p className="text-base font-bold leading-tight" style={{ color: mapIdToColor(columnId) }}>
+                          {column.name} <span className="text-sm font-medium ml-2">{column.tasks.length || 0}</span>
+                        </p>
+                        <BsPlusCircle size={16} onClick={() => handleOpenModal(index)} className="ml-2 cursor-pointer" />
+                      </div>
+                      <div className="m-2">
+                        <Droppable droppableId={columnId} key={columnId}>
+                          {(provided, snapshot) => {
+                            return (
+                              <div
+                                className="p-2 rounded-md"
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                style={{
+                                  border: snapshot.isDraggingOver ? `2px dashed ${mapIdToColor(columnId)}` : "none",
+                                  minHeight: "calc(100vh - 228px)",
+                                }}>
+                                {column.tasks.map((item, index) => {
+                                  return <TaskCard task={item} index={index} key={item._id} />;
+                                })}
+                                {provided.placeholder}
+                              </div>
+                            );
+                          }}
+                        </Droppable>
+                      </div>
                     </div>
-                    <div className="m-2">
-                      <Droppable droppableId={columnId} key={columnId}>
-                        {(provided, snapshot) => {
-                          return (
-                            <div
-                              className="p-2 rounded-md"
-                              {...provided.droppableProps}
-                              ref={provided.innerRef}
-                              style={{
-                                border: snapshot.isDraggingOver ? "1px solid #ccc" : "",
-                                minHeight: "calc(100vh - 160px)",
-                              }}>
-                              {column.tasks.map((item, index) => {
-                                return <TaskCard task={item} index={index} key={item._id} />;
-                              })}
-                              {provided.placeholder}
-                            </div>
-                          );
-                        }}
-                      </Droppable>
-                    </div>
-                  </div>
-                );
-              })}
-            </DragDropContext>
+                  );
+                })}
+              </DragDropContext>
+            </div>
           </div>
           <Modal isOpen={isOpenModal} handleOnClose={handleCloseModal} titleModal="Add Task">
             <div>

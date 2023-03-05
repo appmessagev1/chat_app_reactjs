@@ -18,6 +18,7 @@ import { setSocketOnlineUsers } from "redux/slices/socketOnlineUsers";
 import { getUserIdFromLocalStorage } from "utils/auth";
 import conversationApi from "api/conversationApi";
 import { useHorizontalScroll } from "utils/customHook/useHorizontalScroll";
+import Loading from "./Loading";
 
 const Chat = ({ socket }) => {
   const dispatch = useDispatch();
@@ -140,11 +141,11 @@ const Chat = ({ socket }) => {
   };
 
   return (
-    <div className="-mt-16 ml-auto xl:-ml-16 mr-auto xl:pl-16 pt-16 xl:h-screen w-auto sm:w-3/5 xl:w-auto grid grid-cols-12 gap-6">
+    <div className="-mt-16 ml-auto xl:-ml-16 mr-auto xl:pl-16 pt-16 xl:h-screen w-auto sm:w-3/5 xl:w-auto">
       {isLoading ? (
-        <div></div>
+        <Loading />
       ) : (
-        <>
+        <div className="h-full w-full grid grid-cols-12 gap-6">
           <div className="col-span-12 xl:col-span-3 -mt-16 xl:mt-0 pt-20 xl:-mr-6 px-6 xl:pt-6 flex-col overflow-hidden">
             <div className="text-xl font-medium">Chats</div>
             <div className="mt-5 box">
@@ -200,7 +201,7 @@ const Chat = ({ socket }) => {
               <img src={Empty} />
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );
