@@ -28,7 +28,7 @@ const TopBar = () => {
         </div> */}
         <div className="account">
           <div className="flex justify-center items-center h-full pl-5">
-            <Avatar user={currentUser} size="mini" />
+            <Avatar user={currentUser} size="small" />
             <div className="ml-2">
               <div className="font-medium mb-1/3 leading-tight truncate w-28">{currentUser?.name || currentUser?.email}</div>
               <div className="text-gray-600 text-xs">{currentUser?.title}</div>

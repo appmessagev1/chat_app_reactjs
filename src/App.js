@@ -1,5 +1,6 @@
 import "./App.css";
 import "./assert/css/global.css";
+import "react-tooltip/dist/react-tooltip.css";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";

@@ -1,3 +1,8 @@
+import moment from "moment";
+
+const formatDate = 'DD/MM/YYYY'
+const formatOnlyTime = 'hh:mm'
+
 const mapStatusToId = status => {
   let _status;
   switch (status) {
@@ -44,4 +49,13 @@ const mapIdToColor = (status) => {
   return _color;
 }
 
-export { mapStatusToId, mapIdToColor }
+const formatTaskTime = (time) => {
+  const today = moment().format(formatDate)
+  const formattedTime = moment(time).format(formatDate)
+  if (formattedTime === today) {
+    return moment(time).format(formatOnlyTime);
+  }
+  return formattedTime
+}
+
+export { formatDate, formatOnlyTime, mapStatusToId, mapIdToColor, formatTaskTime };
