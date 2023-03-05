@@ -21,7 +21,7 @@ const TaskCard = ({ task, index }) => {
             }}>
             <div className="flex items-center justify-between">
               <div className="font-medium">{task.title}</div>
-              <Avatar user={task.creator[0]} size="mini" />
+              <Avatar user={task.creator?.[0]} size="mini" hasTooltip/>
             </div>
             <div className="mt-2">
               <p className="break-words">{task.content}aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
