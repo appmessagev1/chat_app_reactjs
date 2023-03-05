@@ -157,7 +157,8 @@ const Task = () => {
   const onSubmit = async data => {
     try {
       const payload = {
-        userId: user._id || getUserIdFromLocalStorage(),
+        creatorId: user._id || getUserIdFromLocalStorage(),
+        assigneeId: user._id || getUserIdFromLocalStorage(),
         ...data,
         status: currentStatus || 0,
       };
