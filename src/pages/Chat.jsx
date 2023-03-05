@@ -142,67 +142,69 @@ const Chat = ({ socket }) => {
 
   return (
     <div className="-mt-16 ml-auto xl:-ml-16 mr-auto xl:pl-16 pt-16 xl:h-screen w-auto sm:w-3/5 xl:w-auto">
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className="h-full w-full grid grid-cols-12 gap-6">
-          <div className="col-span-12 xl:col-span-3 -mt-16 xl:mt-0 pt-20 xl:-mr-6 px-6 xl:pt-6 flex-col overflow-hidden">
-            <div className="text-xl font-medium">Chats</div>
-            <div className="mt-5 box">
-              <TextInput placeholder="Search for users..." appendIcon="search" inputChange={onSearchChange} />
-            </div>
-            <div className="flex-none overflow-x-auto overflow-y-hidden scroll scrollbar-hidden" ref={scrollRef}>
-              <div className="flex mt-6">
-                {socketOnlineUsers?.length > 0 &&
-                  socketOnlineUsers.map((onlineUser, index) => {
-                    if (onlineUser?._id !== user?._id)
-                      return (
-                        <div className="flex flex-col items-center mr-3" key={onlineUser._id}>
-                          <Avatar click={handleClickAvatar} key={index} user={onlineUser} status="online" className="cursor-pointer" />
-                          <span className="text-gray-500 mt-1">{onlineUser.name}</span>
-                        </div>
-                      );
-                    return <div key={index}></div>;
-                  })}
-              </div>
-            </div>
-            <div className="text-base font-medium leading-tight mt-3">Recent Chats</div>
-            <div className="overflow-y-auto scrollbar-hidden -mx-5 px-5 user-card-container">
-              {conversations?.length &&
-                conversations.map((conversation, index) => {
-                  return (
-                    <UserCard
-                      key={index}
-                      conversation={conversation}
-                      click={handleSelectConversation}
-                      zoomIn
-                      user={getUserCardInfo(conversation)}
-                      status="online"
-                      lastMessage={conversation.lastMessage}
-                      showtime
-                      showLastMsg
-                      selected={conversation?._id === currentConversation?._id}
-                    />
-                  );
+      <div className="h-full w-full grid grid-cols-12 gap-6">
+        <div className="col-span-12 xl:col-span-3 -mt-16 xl:mt-0 pt-20 xl:-mr-6 px-6 xl:pt-6 flex-col overflow-hidden">
+          <div className="text-xl font-medium">Chats</div>
+          <div className="mt-5 box">
+            <TextInput placeholder="Search for users..." appendIcon="search" inputChange={onSearchChange} />
+          </div>
+          <div className="flex-none overflow-x-auto overflow-y-hidden scroll scrollbar-hidden" ref={scrollRef}>
+            <div className="flex mt-6">
+              {socketOnlineUsers?.length > 0 &&
+                socketOnlineUsers.map((onlineUser, index) => {
+                  if (onlineUser?._id !== user?._id)
+                    return (
+                      <div className="flex flex-col items-center mr-3" key={onlineUser._id}>
+                        <Avatar click={handleClickAvatar} key={index} user={onlineUser} status="online" className="cursor-pointer" />
+                        <span className="text-gray-500 mt-1">{onlineUser.name}</span>
+                      </div>
+                    );
+                  return <div key={index}></div>;
                 })}
             </div>
           </div>
-          {!isEmpty(currentConversation) ? (
-            <>
-              <div className="chat-box col-span-12 xl:col-span-6 flex flex-col overflow-hidden xl:border-l xl:border-r p-6">
-                <ChatBox socket={socket} />
-              </div>
-              <div className="info-content col-span-12 xl:col-span-3 flex flex-col overflow-hidden pl-6 xl:pl-0 pr-6">
-                <InfoContent />{" "}
-              </div>
-            </>
-          ) : (
-            <div className="col-span-12 xl:col-span-9 flex justify-center items-center xl:border-l xl:border-r">
-              <img src={Empty} />
-            </div>
-          )}
+          <div className="text-base font-medium leading-tight mt-3">Recent Chats</div>
+          <div className="overflow-y-auto scrollbar-hidden -mx-5 px-5 user-card-container">
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <>
+                {conversations?.length &&
+                  conversations.map((conversation, index) => {
+                    return (
+                      <UserCard
+                        key={index}
+                        conversation={conversation}
+                        click={handleSelectConversation}
+                        zoomIn
+                        user={getUserCardInfo(conversation)}
+                        status="online"
+                        lastMessage={conversation.lastMessage}
+                        showtime
+                        showLastMsg
+                        selected={conversation?._id === currentConversation?._id}
+                      />
+                    );
+                  })}
+              </>
+            )}
+          </div>
         </div>
-      )}
+        {!isEmpty(currentConversation) ? (
+          <>
+            <div className="chat-box col-span-12 xl:col-span-6 flex flex-col overflow-hidden xl:border-l xl:border-r p-6">
+              <ChatBox socket={socket} />
+            </div>
+            <div className="info-content col-span-12 xl:col-span-3 flex flex-col overflow-hidden pl-6 xl:pl-0 pr-6">
+              <InfoContent />{" "}
+            </div>
+          </>
+        ) : (
+          <div className="col-span-12 xl:col-span-9 flex justify-center items-center xl:border-l xl:border-r">
+            <img src={Empty} />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
