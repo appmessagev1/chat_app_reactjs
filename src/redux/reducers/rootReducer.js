@@ -3,8 +3,10 @@ import currentReceiver from "redux/slices/currentReceiverSlice";
 import users from "redux/slices/usersSlice";
 import messages from "redux/slices/messageSlice";
 import conversations from "redux/slices/conversationSlice"
+import groups from "redux/slices/groupSlice"
 import socketOnlineUsers from "redux/slices/socketOnlineUsers"
 import tasks from 'redux/slices/taskSlice'
+
 
 const rootReducer = {
   user: authReducer,
@@ -13,6 +15,7 @@ const rootReducer = {
   socketOnlineUsers: socketOnlineUsers,
   messages: messages,
   conversations: conversations,
+  groups: groups,
   tasks: tasks,
 };
 

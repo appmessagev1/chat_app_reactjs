@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
 import TextSendMsg from "components/common/TextSendMsg";
-import UserCard from "components/common/UserCard";
+import UserCard from "components/UserCard";
 import MessageBox from "components/common/MessageBox";
 
 const ChatBox = ({ socket }) => {

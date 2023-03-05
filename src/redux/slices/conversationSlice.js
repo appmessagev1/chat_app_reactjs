@@ -18,7 +18,7 @@ const conversationSlice = createSlice({
     isLoading: false
   },
   reducers: {
-    setConversations(state, action) {
+    addConversation(state, action) {
       state.data = [...state.data, action.payload];
     },
     setCurrentConversation(state, action) { 
@@ -40,5 +40,5 @@ const conversationSlice = createSlice({
 });
 
 const { actions, reducer } = conversationSlice;
-export const { setConversations, setCurrentConversation } = actions;
+export const { addConversation, setCurrentConversation } = actions;
 export default reducer;

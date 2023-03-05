@@ -4,7 +4,7 @@ import { isEmpty } from "lodash";
 import { toast } from "react-toastify";
 
 import TextInput from "components/common/TextInput";
-import UserCard from "components/common/UserCard";
+import UserCard from "components/UserCard";
 import ChatBox from "components/ChatBox";
 import InfoContent from "components/InfoContent";
 import Empty from "assert/images/Empty.png";
@@ -103,8 +103,7 @@ const Chat = ({ socket }) => {
       );
     });
     if (conversation) {
-      const action = setCurrentConversation(conversation);
-      dispatch(action);
+      handleSelectConversation(conversation);
     } else {
       try {
         const payload = {
