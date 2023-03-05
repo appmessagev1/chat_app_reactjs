@@ -1,4 +1,4 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 
@@ -8,6 +8,7 @@ import { getTokenFromLocalStorage, getUserIdFromLocalStorage } from "utils/auth"
 
 const ProtectedRouter = ({ socket }) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const token = getTokenFromLocalStorage();
   const userId = getUserIdFromLocalStorage();
 
@@ -21,7 +22,7 @@ const ProtectedRouter = ({ socket }) => {
         socket.emit("sign_in", _user);
       }
     } catch (error) {
-      console.log(error)
+      navigate("/sign_in")
     }
   }
 
