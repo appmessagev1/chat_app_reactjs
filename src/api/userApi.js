@@ -14,6 +14,11 @@ const userApi = {
     const { id, ...form } = payload;
     const url = `/users/${id || ''}`;
     return axiosClient.put(url, { ...form })
+  },
+  getUsersByNameOrEmail(payload) {
+    const { searchInput } = payload;
+    const url = `/users?search=${searchInput || ''}`;
+    return axiosClient.get(url)
   }
 };
 

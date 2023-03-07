@@ -12,6 +12,7 @@ import taskApi from "api/taskApi";
 import { mapStatusToId, mapIdToColor } from "utils/global";
 import Modal from "components/common/Modal";
 import Loading from "./Loading";
+import UserCombobox from "components/UserCombobox";
 
 const getTasksByStatus = tasks => {
   const taskStatus = tasks.reduce(
@@ -122,6 +123,7 @@ const Task = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(undefined);
   const isLoading = useSelector(state => state.tasks.isLoading);
+  const [assigneeId, setAssigneeId] = useState("");
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -158,7 +160,7 @@ const Task = () => {
     try {
       const payload = {
         creatorId: user._id || getUserIdFromLocalStorage(),
-        assigneeId: user._id || getUserIdFromLocalStorage(),
+        assigneeId: assigneeId || getUserIdFromLocalStorage(),
         ...data,
         status: currentStatus || 0,
       };
@@ -167,13 +169,19 @@ const Task = () => {
       if (response.error_code === 0) {
         toast.success("Create task successfully");
         handleCloseModal();
-        const _tasks = response.data.task;
-        const action = addTask(_tasks);
-        dispatch(action);
+        if (assigneeId === user._id) {
+          const _tasks = response.data.task;
+          const action = addTask(_tasks);
+          dispatch(action);
+        }
       }
     } catch (err) {
       toast.error("Create task failed");
     }
+  };
+
+  const onSelectUser = user => {
+    setAssigneeId(user._id);
   };
 
   return (
@@ -225,10 +233,10 @@ const Task = () => {
           <Modal isOpen={isOpenModal} handleOnClose={handleCloseModal} titleModal="Add Task">
             <div>
               <form onSubmit={handleSubmit(onSubmit)}>
-                <input type="text" className="text-input-form py-2 px-4 auth__input mb-4" placeholder="Title" {...register("title")} />
-                <input type="text" className="text-input-form py-2 px-4 auth__input mb-4" placeholder="Content" {...register("content")} />
-
-                <div className="flex justify-end items-center w-80 ml-auto">
+                <input type="text" className="text-input-form py-3 px-4 auth__input mb-4" placeholder="Title" {...register("title")} />
+                <input type="text" className="text-input-form py-3 px-4 auth__input mb-4" placeholder="Content" {...register("content")} />
+                <UserCombobox onSelectUser={onSelectUser} inputClassName="border-user-search" />
+                <div className="mt-2 flex justify-end items-center w-80 ml-auto">
                   <button className="btn btn-secondary" onClick={handleCloseModal}>
                     Cancel
                   </button>

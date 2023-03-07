@@ -19,6 +19,7 @@ import { getUserIdFromLocalStorage } from "utils/auth";
 import conversationApi from "api/conversationApi";
 import { useHorizontalScroll } from "utils/customHook/useHorizontalScroll";
 import Loading from "./Loading";
+import UserCombobox from "components/UserCombobox";
 
 const Chat = ({ socket }) => {
   const dispatch = useDispatch();
@@ -146,7 +147,8 @@ const Chat = ({ socket }) => {
         <div className="col-span-12 xl:col-span-3 -mt-16 xl:mt-0 pt-20 xl:-mr-6 px-6 xl:pt-6 flex-col overflow-hidden">
           <div className="text-xl font-medium">Chats</div>
           <div className="mt-5 box">
-            <TextInput placeholder="Search for users..." appendIcon="search" inputChange={onSearchChange} />
+            {/* <TextInput placeholder="Search for users..." appendIcon="search" inputChange={onSearchChange} /> */}
+            <UserCombobox notMe onSelectUser={handleClickAvatar} />
           </div>
           <div className="flex-none overflow-x-auto overflow-y-hidden scroll scrollbar-hidden" ref={scrollRef}>
             <div className="flex mt-6">
