@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import messageApi from "api/messageApi";
 
-export const getMessagesPrivate = createAsyncThunk("message/getMessages", async payload => {
+
+export const getMessagesGroup = createAsyncThunk("message/getMessagesGroup", async payload => {
   try {
-    const data = await messageApi.getMessageInConversation(payload);
+    const data = await messageApi.getMessageInGroup(payload);
     return data;
   } catch (error) {
     throw error;
@@ -16,17 +17,17 @@ const messageSlice = createSlice({
     data: [],
   },
   reducers: {
-    addMessage(state, action) {
+    addMessageGroup(state, action) {
       state.data = [...state.data, action.payload];
     },
   },
   extraReducers: builder => {
-    builder.addCase(getMessagesPrivate.fulfilled, (state, action) => {
+    builder.addCase(getMessagesGroup.fulfilled, (state, action) => {
       state.data = action.payload.data.reverse();
     });
   },
 });
 
 const { actions, reducer } = messageSlice;
-export const { addMessage } = actions;
+export const { addMessageGroup } = actions;
 export default reducer;

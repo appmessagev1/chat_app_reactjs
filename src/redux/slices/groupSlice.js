@@ -22,7 +22,7 @@ const groupSlice = createSlice({
       state.data = [...state.data, action.payload];
     },
     setCurrentGroup(state, action) {
-      state.currentConversation = action.payload;
+      state.currentGroup = action.payload;
     },
   },
   extraReducers: builder => {

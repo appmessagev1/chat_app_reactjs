@@ -4,15 +4,19 @@ import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import notification from "assert/sounds/notification.wav";
 
+import { getGroups } from "redux/slices/groupSlice";
 import TopBar from "components/TopBar";
 import { addMessage } from "redux/slices/messageSlice";
+import { addMessageGroup } from "redux/slices/messageGroupSlice";
 import { getConversations, setCurrentConversation } from "redux/slices/conversationSlice";
 import { getUserIdFromLocalStorage } from "utils/auth";
 
 const DefaultLayout = ({ children, socket }) => {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user.data)
+  const user = useSelector(state => state.user.data);
+  const groups = useSelector(state => state.groups.data);
   const currentConversation = useSelector(state => state.conversations.currentConversation);
+  const currentGroup = useSelector(state => state.groups.currentGroup);
   const notificationSound = useRef(null);
 
   useEffect(() => {
@@ -33,7 +37,35 @@ const DefaultLayout = ({ children, socket }) => {
 
   useEffect(() => {
     notificationSound.current = new Audio(notification);
+    const userId = user._id || getUserIdFromLocalStorage();
+    const action = getGroups({ id: userId });
+    dispatch(action);
   }, []);
+
+  useEffect(() => {
+    const groupIds = groups.map(group => group.groupId._id);
+    if (groupIds.length) {
+      groupIds.forEach(groupId => {
+        socket.emit("join_group", { userId: user._id, groupId: groupId });
+      });
+    }
+  }, [groups.length]);
+
+  useEffect(() => {
+    socket.on("msg_group_receive", data => {
+      const userId = user._id || getUserIdFromLocalStorage();
+      const action = getGroups({ id: userId });
+      dispatch(action);
+
+      if (data.groupId === currentGroup._id) {
+        const action = addMessageGroup(data);
+        dispatch(action);
+      }
+      if (notificationSound.current) {
+        notificationSound.current.play();
+      }
+    });
+  }, [currentGroup._id]);
 
   return (
     <div className="bg-light-blue w-full h-screen">

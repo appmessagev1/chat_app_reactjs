@@ -21,6 +21,11 @@ const groupApi = {
     const url = "/group";
     return axiosClient.post(url, { ...payload });
   },
+
+  addUserToGroup(payload) {
+    const url = "/group/addUser";
+    return axiosClient.post(url, { ...payload });
+  }
 };
 
 export default groupApi;

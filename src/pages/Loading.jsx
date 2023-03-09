@@ -2,12 +2,12 @@ import React from "react";
 
 const Loading = () => {
   return (
-    <div class="loading-screen">
-      <div class="loading">
-        <div class="ball one"></div>
-        <div class="ball two"></div>
-        <div class="ball three"></div>
-        <div class="ball four"></div>
+    <div className="loading-screen">
+      <div className="loading">
+        <div className="ball one"></div>
+        <div className="ball two"></div>
+        <div className="ball three"></div>
+        <div className="ball four"></div>
       </div>
     </div>
   );
