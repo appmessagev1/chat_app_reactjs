@@ -26,15 +26,17 @@ const Group = ({ socket }) => {
   const user = useSelector(state => state.user.data);
 
   useEffect(() => {
-    socket.on("invited", () => {
-      toast.info("You have been added to the group");
-      if (user._id || getUserIdFromLocalStorage()) {
-        const action = getGroups({ id: user._id || getUserIdFromLocalStorage()  });
-        dispatch(action);
+    socket.on("invited", data => {
+      if (data.userId === user._id || data.userId === getUserIdFromLocalStorage()) {
+        toast.info("You have been added to the group");
+        if (user._id || getUserIdFromLocalStorage()) {
+          const action = getGroups({ id: user._id || getUserIdFromLocalStorage() });
+          dispatch(action);
+        }
       }
     });
 
-    socket.on("removed", (data) => {
+    socket.on("removed", data => {
       toast.info("You have been removed from the group");
       if (user._id || getUserIdFromLocalStorage()) {
         const action = getGroups({ id: user._id || getUserIdFromLocalStorage() });
@@ -44,7 +46,7 @@ const Group = ({ socket }) => {
           dispatch(currentGroup);
         }
       }
-    })
+    });
   }, []);
 
   const onSelectGroup = group => {
@@ -98,9 +100,10 @@ const Group = ({ socket }) => {
             <Loading />
           ) : (
             <>
-              {groups.length && groups.map(group => {
-                return <GroupCard group={group.groupId} key={group._id} zoomIn click={onSelectGroup} showLastMsg />;
-              })}
+              {groups.length &&
+                groups.map(group => {
+                  return <GroupCard group={group.groupId} key={group._id} zoomIn click={onSelectGroup} showLastMsg />;
+                })}
             </>
           )}
         </div>
