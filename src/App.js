@@ -15,6 +15,7 @@ import Profile from "pages/Profile";
 import Tasks from "pages/Tasks";
 import NotFound from "pages/NotFound";
 import Group from "pages/Group";
+import Schedule from "pages/Schedule";
 
 const socket = socketIO.connect(process.env.REACT_APP_API_URL_SOCKET);
 
@@ -29,6 +30,7 @@ function App() {
               <Route element={<Group socket={socket} />} path="/groups" />
               <Route element={<Profile socket={socket} />} path="/profile" />
               <Route element={<Tasks socket={socket} />} path="/tasks" />
+              <Route element={<Schedule socket={socket} />} path="/schedule" />
             </Route>
           </Route>
           <Route element={<SignIn />} path="/sign_in" />

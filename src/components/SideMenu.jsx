@@ -5,6 +5,7 @@ import { CiMail, CiUser, CiSettings, CiBoxes, CiChat1 } from "react-icons/ci";
 import { BsListTask } from "react-icons/bs";
 import { IoIosLogOut } from "react-icons/io";
 import { Tooltip } from "react-tooltip";
+import {AiOutlineSchedule} from "react-icons/ai"
 
 import { doSignOut } from "redux/slices/authSlice";
 
@@ -31,6 +32,12 @@ const SideMenu = () => {
       text: "Tasks",
       class: "tasks",
       link: "/tasks",
+    },
+    {
+      icon: <AiOutlineSchedule size={24} color={location.pathname === "/schedule" ? "#007aff" : ""} />,
+      text: "Schedule",
+      class: "schedule",
+      link: "/schedule",
     },
     {
       icon: <CiUser size={24} color={location.pathname === "/profile" ? "#007aff" : ""} />,
