@@ -11,6 +11,12 @@ const groupApi = {
     return axiosClient.get(url);
   },
 
+  getGroupById(payload) {
+    const { id } = payload;
+    const url = `/group/getById/${id}`;
+    return axiosClient.get(url);
+  },
+
   postGroup(payload) {
     // payload = {
     //   senderId,
@@ -25,6 +31,18 @@ const groupApi = {
   addUserToGroup(payload) {
     const url = "/group/addUser";
     return axiosClient.post(url, { ...payload });
+  },
+
+  getUsersInGroup(payload) {
+    const { id } = payload;
+    const url = `/group/${id}/users`
+    return axiosClient.get(url)
+  },
+
+  removeUserInGroup(payload) {
+    const { id } = payload;
+    const url = `/group/${id}`;
+    return axiosClient.delete(url)
   }
 };
 

@@ -57,7 +57,7 @@ const SideMenu = () => {
       <div className="side-menu__content box border-r w-full h-full flex flex-col justify-center pt-16 relative">
         {menu.map((item, index) => {
           return (
-            <>
+            <div key={index}>
               <div key={index} className={`cursor-pointer link-${item.class}`}>
                 <Link to={item.link} className="side-menu__content__link text-gray-600 py-5 flex justify-center">
                   {item.icon}
@@ -66,7 +66,7 @@ const SideMenu = () => {
               <Tooltip anchorSelect={`.link-${item.class}`} place="right" className="!rounded-md !bg-gray-400">
                 {item.text}
               </Tooltip>
-            </>
+            </div>
           );
         })}
         <div className="absolute bottom-0 left-0 flex justify-center items-center w-full py-4 cursor-pointer link-sign-out" onClick={signOut}>

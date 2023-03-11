@@ -13,15 +13,39 @@ import Empty from "assert/images/Empty.png";
 import Modal from "components/common/Modal";
 import TextInput from "components/common/TextInput";
 import groupApi from "api/groupApi";
+import GroupInfo from "components/GroupInfo";
+import { getUserIdFromLocalStorage } from "utils/auth";
 
 const Group = ({ socket }) => {
   const dispatch = useDispatch();
-  const [isShowModal, setIsShowModal] = useState(false)
+  const [isShowModal, setIsShowModal] = useState(false);
   const isLoading = useSelector(state => state.groups.isLoading);
   const groups = useSelector(state => state.groups.data);
   const currentGroup = useSelector(state => state.groups.currentGroup);
-  const [groupName, setGroupName] = useState("")
-  const user = useSelector(state => state.user.data)
+  const [groupName, setGroupName] = useState("");
+  const user = useSelector(state => state.user.data);
+
+  useEffect(() => {
+    socket.on("invited", () => {
+      toast.info("You have been added to the group");
+      if (user._id || getUserIdFromLocalStorage()) {
+        const action = getGroups({ id: user._id || getUserIdFromLocalStorage()  });
+        dispatch(action);
+      }
+    });
+
+    socket.on("removed", (data) => {
+      toast.info("You have been removed from the group");
+      if (user._id || getUserIdFromLocalStorage()) {
+        const action = getGroups({ id: user._id || getUserIdFromLocalStorage() });
+        dispatch(action);
+        if (data.groupId == currentGroup._id && data.userId == user._id) {
+          const currentGroup = setCurrentGroup({});
+          dispatch(currentGroup);
+        }
+      }
+    })
+  }, []);
 
   const onSelectGroup = group => {
     const action = setCurrentGroup(group);
@@ -32,35 +56,34 @@ const Group = ({ socket }) => {
   };
 
   const handleOpenModal = () => {
-    setIsShowModal(true)
-  }
+    setIsShowModal(true);
+  };
 
-  const handleCloseModal = () => { 
-    setIsShowModal(false)
-  }
+  const handleCloseModal = () => {
+    setIsShowModal(false);
+  };
 
-  const onSubmit = async (e) => {
+  const onSubmit = async e => {
     try {
-
-      e.preventDefault()
+      e.preventDefault();
       const data = {
         name: groupName,
-        ownerId: user._id
-      }
-      const response = await groupApi.postGroup(data)
+        ownerId: user._id,
+      };
+      const response = await groupApi.postGroup(data);
       if (response.error_code === 0) {
-        const action = getGroups({ id: user._id })
-        dispatch(action)
-      } 
+        const action = getGroups({ id: user._id });
+        dispatch(action);
+      }
     } catch (error) {
-      toast.error("Cannot create group")
+      toast.error("Cannot create group");
     }
-    handleCloseModal()
-  }
+    handleCloseModal();
+  };
 
-  const handleInputChange = (input) => {
-    setGroupName(input)
-  }
+  const handleInputChange = input => {
+    setGroupName(input);
+  };
 
   return (
     <div className="-mt-16 ml-auto xl:-ml-16 mr-auto xl:pl-16 pt-16 xl:h-screen w-auto sm:w-3/5 xl:w-auto grid grid-cols-12 gap-6">
@@ -75,7 +98,7 @@ const Group = ({ socket }) => {
             <Loading />
           ) : (
             <>
-              {groups.map(group => {
+              {groups.length && groups.map(group => {
                 return <GroupCard group={group.groupId} key={group._id} zoomIn click={onSelectGroup} showLastMsg />;
               })}
             </>
@@ -87,7 +110,9 @@ const Group = ({ socket }) => {
           <div className="chat-box col-span-12 xl:col-span-6 flex flex-col overflow-hidden xl:border-l xl:border-r p-6">
             <ChatBox socket={socket} />
           </div>
-          <div className="info-content col-span-12 xl:col-span-3 flex flex-col overflow-hidden pl-6 xl:pl-0 pr-6"></div>
+          <div className="info-content col-span-12 xl:col-span-3 flex flex-col overflow-hidden pl-6 xl:pl-0 pr-6">
+            <GroupInfo socket={socket} />
+          </div>
         </>
       ) : (
         <>

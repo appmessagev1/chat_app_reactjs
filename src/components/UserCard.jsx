@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
 import { CiCamera, CiMicrophoneOn } from "react-icons/ci";
+import { AiOutlineMore } from "react-icons/ai";
 
 import Avatar from "components/common/Avatar";
 
@@ -17,7 +17,19 @@ const UserCard = ({
   showtime,
   showLastMsg,
   lastMessage,
+  children,
 }) => {
+  const [isShowAction, setIsShowAction] = useState(false);
+
+  const handleOpenAction = e => {
+    e.stopPropagation();
+    setIsShowAction(true);
+  };
+
+  const handleCloseAction = () => {
+    setIsShowAction(false);
+  };
+
   return (
     <div className={zoomIn && "zoom-in"} onClick={e => click(conversation || user)}>
       <div className={`box cursor-pointer relative flex items-center px-4 py-3 mt-4 ${selected && "!bg-primary"} ${className}`}>
@@ -41,6 +53,7 @@ const UserCard = ({
             <CiMicrophoneOn size={24} className="mr-1" />
           </div>
         )}
+        {children}
       </div>
     </div>
   );

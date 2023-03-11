@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import SideMenu from "components/SideMenu";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import notification from "assert/sounds/notification.wav";
 
 import { getGroups } from "redux/slices/groupSlice";
@@ -43,7 +44,17 @@ const DefaultLayout = ({ children, socket }) => {
   }, []);
 
   useEffect(() => {
-    const groupIds = groups.map(group => group.groupId._id);
+    socket.on("invited", (data) => {
+      if (data.userId === user._id) {
+        toast.info("You have been added to the group");
+        const action = getGroups({ id: user._id });
+        dispatch(action);
+      }
+    });
+  }, [])
+
+  useEffect(() => {
+    const groupIds = groups.map(group => group?.groupId?._id);
     if (groupIds.length) {
       groupIds.forEach(groupId => {
         socket.emit("join_group", { userId: user._id, groupId: groupId });
