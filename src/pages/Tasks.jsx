@@ -4,6 +4,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { toast } from "react-toastify";
 import { BsPlusCircle } from "react-icons/bs";
 import { useForm } from "react-hook-form";
+import moment from "moment";
 
 import TaskCard from "components/TaskCard";
 import { getTasks, addTask } from "redux/slices/taskSlice";
@@ -115,6 +116,9 @@ const onDragEnd = (result, columns, setColumns) => {
   }
 };
 
+const defaultStartDate = moment().subtract(1, "weeks").startOf("week").format();
+const defaultEndDate = moment().endOf("week").format();
+
 const Task = () => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.data);
@@ -124,6 +128,7 @@ const Task = () => {
   const [currentStatus, setCurrentStatus] = useState(undefined);
   const isLoading = useSelector(state => state.tasks.isLoading);
   const [assigneeId, setAssigneeId] = useState("");
+  
 
   const { register, handleSubmit, reset } = useForm();
 

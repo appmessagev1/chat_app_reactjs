@@ -9,8 +9,10 @@ const localizer = momentLocalizer(moment);
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
-const ScheduleBoard = (props) => {
-  const [events, setEvents] = useState(props.events);
+const defaultDate = moment()
+
+const ScheduleBoard = ({ onClickSlot }) => {
+  const [events, setEvents] = useState([]);
 
   const moveEvent = useCallback(
     ({ event, start, end, isAllDay: droppedOnAllDaySlot = false }) => {
@@ -39,7 +41,9 @@ const ScheduleBoard = (props) => {
     [setEvents]
   );
 
-  const defaultDate = useMemo(() => new Date(2015, 3, 12), []);
+  const onSelectSlot = (slotInfo) => {
+    console.log(slotInfo)
+  }
 
   return (
     <DragAndDropCalendar
@@ -48,11 +52,13 @@ const ScheduleBoard = (props) => {
       events={events}
       localizer={localizer}
       onEventDrop={moveEvent}
+      selectable={true}
       onEventResize={resizeEvent}
+      onSelectSlot={onClickSlot}
       popup
       resizable
     />
   );
-}
+};
 
 export default ScheduleBoard;
