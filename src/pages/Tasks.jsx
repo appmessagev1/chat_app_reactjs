@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 import { BsPlusCircle } from "react-icons/bs";
 import { useForm } from "react-hook-form";
 import moment from "moment";
+import "react-dates/lib/css/_datepicker.css";
+import "react-dates/initialize";
+import { DateRangePicker } from "react-dates";
 
 import TaskCard from "components/TaskCard";
 import { getTasks, addTask } from "redux/slices/taskSlice";
@@ -116,8 +119,8 @@ const onDragEnd = (result, columns, setColumns) => {
   }
 };
 
-const defaultStartDate = moment().subtract(1, "weeks").startOf("week").format();
-const defaultEndDate = moment().endOf("week").format();
+const defaultStartDate = moment().subtract(1, "weeks").startOf("week");
+const defaultEndDate = moment().endOf("week");
 
 const Task = () => {
   const dispatch = useDispatch();
@@ -128,17 +131,19 @@ const Task = () => {
   const [currentStatus, setCurrentStatus] = useState(undefined);
   const isLoading = useSelector(state => state.tasks.isLoading);
   const [assigneeId, setAssigneeId] = useState("");
-  
+  const [startDate, setStartDate] = useState(defaultStartDate);
+  const [endDate, setEndDate] = useState(defaultEndDate);
+  const [focusedInput, setFocusedInput] = useState(null);
 
   const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
     getTasksByUserId();
-  }, []);
+  }, [startDate, endDate]);
 
   const getTasksByUserId = () => {
     const userId = user._id || getUserIdFromLocalStorage();
-    const action = getTasks({ id: userId });
+    const action = getTasks({ id: userId, startTime: moment(startDate).format(), endTime: moment(endDate).format() });
     dispatch(action);
   };
 
@@ -196,7 +201,26 @@ const Task = () => {
       ) : (
         <>
           <div className="h-full w-full ">
-            <div className="text-xl font-medium pt-6 px-6">Task Manager</div>
+            <div className="text-xl font-medium pt-6 px-6">
+              Task Manager{" "}
+              <DateRangePicker
+                startDateId="start-date"
+                startDate={startDate}
+                endDateId="end-date"
+                endDate={endDate}
+                onDatesChange={({ startDate, endDate }) => {
+                  setStartDate(startDate);
+                  setEndDate(endDate);
+                }}
+                focusedInput={focusedInput}
+                onFocusChange={focusedInput => setFocusedInput(focusedInput)}
+                numberOfMonths={2}
+                small
+                isOutsideRange={() => false}
+                displayFormat={() => "DD/MM/YYYY"}
+                noBorder
+              />
+            </div>
             <div className="grid grid-cols-12 gap-6 pb-8 px-2 pt-4">
               <DragDropContext onDragEnd={result => onDragEnd(result, columns, setColumns)}>
                 {Object.entries(columns).map(([columnId, column], index) => {

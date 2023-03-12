@@ -217,3 +217,43 @@
 .border-user-search {
   border: 1px solid #E7E8EC !important;
 }
+
+
+
+/* Custom range date picker css */
+
+.DateRangePicker {
+  @apply box;
+}
+
+.DateRangePicker .CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover {
+  background: #3E9AFD !important;
+  border: 1px solid #E4E7E7 !important;
+}
+
+.DateRangePicker .CalendarDay__selected_span:active, .CalendarDay__selected_span:hover {
+  background: #3E9AFD !important;
+  border: 1px solid #E4E7E7 !important;
+}
+
+.DateRangePicker .CalendarDay__selected_span {
+  background: #E7ECFA !important;
+  border: 1px solid #E4E7E7 !important;
+}
+
+.DateRangePicker .CalendarDay__hovered_span, .CalendarDay__hovered_span:hover {
+  background-color: #E7ECFA !important;
+  border: 1px solid #E7ECFA !important;
+}
+
+.DateRangePicker .CalendarDay__selected_span, .CalendarDay__selected_span:hover {
+  background: #E7ECFA !important;
+}
+
+.DateRangePicker .DayPickerKeyboardShortcuts_buttonReset:hover .DayPickerKeyboardShortcuts_show__bottom {
+  border-right: 33px solid #3E9AFD !important;
+}
+
+.DateRangePicker .DayPickerKeyboardShortcuts_show__bottomRight::before {
+  border-right: 33px solid #3E9AFD !important;
+}
