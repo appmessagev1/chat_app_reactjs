@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import { BsPlusCircle } from "react-icons/bs";
 import { useForm } from "react-hook-form";
 import moment from "moment";
-import "react-dates/lib/css/_datepicker.css";
-import "react-dates/initialize";
 import { DateRangePicker } from "react-dates";
 
 import TaskCard from "components/TaskCard";

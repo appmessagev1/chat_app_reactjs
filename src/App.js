@@ -1,7 +1,9 @@
 import "./App.css";
+import "react-dates/initialize";
 import "./assert/css/global.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "react-toastify/dist/ReactToastify.css";
+import "react-dates/lib/css/_datepicker.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import socketIO from "socket.io-client";
